@@ -1,5 +1,6 @@
 import Router from "./Router";
 import { createGlobalStyle } from "styled-components";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 const GlobalStyle = createGlobalStyle`
 @font-face {
@@ -75,6 +76,7 @@ function App() {
   return <>
   <GlobalStyle></GlobalStyle>
   <Router />
+  <ReactQueryDevtools initialIsOpen={true} />
   </>
 }
 
