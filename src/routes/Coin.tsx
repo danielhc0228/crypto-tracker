@@ -5,6 +5,7 @@ import Chart from "./Chart";
 import Price from "./Price";
 import { Link } from "react-router-dom";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
+import { Helmet } from "react-helmet"
 
 const Title = styled.h1`
   font-size: 48px;
@@ -13,6 +14,10 @@ const Title = styled.h1`
 const Loader = styled.span`
   text-align: center;
   display: block;
+`;
+const BackArrow = styled.div`
+  font-size: 25px;
+  color: ${(props) => props.theme.accentColor};
 `;
 const Container = styled.div`
   padding: 0px 20px;
@@ -24,6 +29,7 @@ const Header = styled.header`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 
 const Overview = styled.div`
@@ -146,14 +152,25 @@ function Coin() {
   );
 
   const {isLoading: tickersLoading, data: tickersData} = useQuery<PriceData>(
-    ["tickers", coinId], () => fetchCoinTickers(coinId)
+    ["tickers", coinId], () => fetchCoinTickers(coinId),
+    {
+      refetchInterval: 30000,
+    }
   );
 
   const loading = infoLoading || tickersLoading;
 
   return (
     <Container>
+      <Helmet>
+        <title>
+          {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
+        </title>
+      </Helmet>
       <Header>
+        <Link to="/" style={{position: "absolute", left: "30px"}}>
+            <BackArrow>{"<"}</BackArrow>
+        </Link>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </Title>
@@ -172,8 +189,8 @@ function Coin() {
               <span>${infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Open Source:</span>
-              <span>{infoData?.open_source ? "Yes" : "No"}</span>
+              <span>Price:</span>
+              <span>${tickersData?.quotes.USD.price.toFixed(3)}</span>
             </OverviewItem>
           </Overview>
           <Description>{infoData?.description}</Description>
@@ -197,7 +214,14 @@ function Coin() {
           </Tabs>
           <Switch>
             <Route path={`/${coinId}/price`}>
-              <Price />
+              <Price 
+                percent30m={tickersData?.quotes.USD.percent_change_30m}
+                percent1h={tickersData?.quotes.USD.percent_change_1h}
+                percent12h={tickersData?.quotes.USD.percent_change_12h}
+                percent7d={tickersData?.quotes.USD.percent_change_7d}
+                percent30d={tickersData?.quotes.USD.percent_change_30d}
+                percent1y={tickersData?.quotes.USD.percent_change_1y}
+              />
             </Route>
             <Route path={`/${coinId}/chart`}>
               <Chart coinId={coinId}/>
