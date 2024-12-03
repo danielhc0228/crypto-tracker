@@ -141,7 +141,11 @@ interface PriceData {
 }
 
 
-function Coin() {
+interface ICoinProps {
+  isDark: boolean;
+}
+
+function Coin({ isDark }: ICoinProps) {
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
   const priceMatch = useRouteMatch("/:coindId/price");
@@ -189,8 +193,8 @@ function Coin() {
               <span>${infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Price:</span>
-              <span>${tickersData?.quotes.USD.price.toFixed(3)}</span>
+              <span>Price (USD):</span>
+              <span>${tickersData?.quotes?.USD?.price?.toFixed(3)}</span>
             </OverviewItem>
           </Overview>
           <Description>{infoData?.description}</Description>
@@ -215,16 +219,16 @@ function Coin() {
           <Switch>
             <Route path={`/${coinId}/price`}>
               <Price 
-                percent30m={tickersData?.quotes.USD.percent_change_30m}
-                percent1h={tickersData?.quotes.USD.percent_change_1h}
-                percent12h={tickersData?.quotes.USD.percent_change_12h}
-                percent7d={tickersData?.quotes.USD.percent_change_7d}
-                percent30d={tickersData?.quotes.USD.percent_change_30d}
-                percent1y={tickersData?.quotes.USD.percent_change_1y}
+                percent30m={tickersData?.quotes?.USD?.percent_change_30m}
+                percent1h={tickersData?.quotes?.USD?.percent_change_1h}
+                percent12h={tickersData?.quotes?.USD?.percent_change_12h}
+                percent7d={tickersData?.quotes?.USD?.percent_change_7d}
+                percent30d={tickersData?.quotes?.USD?.percent_change_30d}
+                percent1y={tickersData?.quotes?.USD?.percent_change_1y}
               />
             </Route>
             <Route path={`/${coinId}/chart`}>
-              <Chart coinId={coinId}/>
+              <Chart isDark={isDark} coinId={coinId}/>
             </Route>
           </Switch>
         </>

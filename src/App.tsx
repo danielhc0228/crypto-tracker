@@ -1,6 +1,8 @@
 import Router from "./Router";
 import { createGlobalStyle } from "styled-components";
-import { ReactQueryDevtools } from "react-query/devtools";
+import {ThemeProvider} from "styled-components";
+import { lightTheme, darkTheme } from "./theme";
+import { useState } from "react";
 
 const GlobalStyle = createGlobalStyle`
 @font-face {
@@ -73,10 +75,16 @@ a {
 }
 `;
 function App() {
-  return <>
-  <GlobalStyle></GlobalStyle>
-  <Router />
+  const [isDark, setDark] = useState(true);
+  const toggleDark = () => setDark((current) => (!current));
+  return (
+  <>
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+      <GlobalStyle></GlobalStyle>
+      <Router isDark={isDark} toggleDark={toggleDark} />
+    </ThemeProvider>
   </>
+  )
 }
 
 export default App;

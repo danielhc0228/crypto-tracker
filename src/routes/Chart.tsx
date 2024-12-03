@@ -26,6 +26,7 @@ interface IHistoricalCandle {
 
 interface ChartProps {
   coinId: string;
+  isDark: boolean;
 }
 
 interface ICandleChartItem {
@@ -33,7 +34,7 @@ interface ICandleChartItem {
   y: number[];
 }
 
-function Chart({coinId}: ChartProps) {
+function Chart({coinId, isDark}: ChartProps) {
   const { isLoading: isLoadingLine, data: dataLine } = useQuery<IHistoricalLine[]>(
     ["ohclv-line", coinId],
     () => fetchCoinHistory(coinId),
@@ -59,7 +60,7 @@ function Chart({coinId}: ChartProps) {
       ]}
       options={{
         theme: {
-          mode: "dark",
+          mode: isDark ? "dark" : "light",
         },
         chart: {
           height: 300,
