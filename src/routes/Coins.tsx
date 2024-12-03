@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoins } from "../api";
 import { Helmet } from "react-helmet";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { isDarkAtom } from "../atom";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -20,7 +22,7 @@ const Header = styled.header`
 const CoinsList = styled.ul``;
 
 const Coin = styled.li`
-  background-color: white;
+  background-color: ${(props) => props.theme.panelColor};
   color: ${(props) => props.theme.textColor};
   border-radius: 15px;
   margin-bottom: 10px;
@@ -53,6 +55,30 @@ const Img = styled.img`
   margin-right: 10px;
 `;
 
+
+const Toggle = styled.button`
+    position: absolute;
+    left: 60%;
+    color: ${(props) => props.theme.accentColor};
+    background: #5E5DF0;
+    border-radius: 999px;
+    box-shadow: #5E5DF0 0 10px 20px -10px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 25px;
+    font-weight: 500;
+    opacity: 1;
+    outline: 0 solid transparent;
+    padding: 2px 20px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: fit-content;
+    word-break: break-word;
+    border: 0;
+`
+
 interface ICoin {
   id: string;
   name: string;
@@ -63,11 +89,10 @@ interface ICoin {
   type: string;
 }
 
-interface ICoinsProps {
-  toggleDark: () => void;
-}
-
-function Coins({ toggleDark }: ICoinsProps) {
+function Coins() {
+  const isDark = useRecoilValue(isDarkAtom);
+  const setDarkAtom = useSetRecoilState(isDarkAtom);
+  const toggleDarkAtom = () => setDarkAtom(prev => !prev);
   const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
     return <Container>
               <Helmet>
@@ -75,7 +100,7 @@ function Coins({ toggleDark }: ICoinsProps) {
               </Helmet>
               <Header>
                 <Title>Coins</Title>
-                <button onClick={toggleDark}>Toggle Dark Mode</button>
+                <Toggle onClick={toggleDarkAtom}>{isDark ? "☾" : "☀︎"}</Toggle>
               </Header>
               {isLoading ? <Loader>Loading...</Loader> : 
               <CoinsList>

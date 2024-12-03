@@ -6,6 +6,8 @@ import Price from "./Price";
 import { Link } from "react-router-dom";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
 import { Helmet } from "react-helmet"
+import { isDarkAtom } from "../atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 const Title = styled.h1`
   font-size: 48px;
@@ -77,6 +79,29 @@ const Tab = styled.span<{ isActive: boolean }>`
   }
 `;
 
+const Toggle = styled.button`
+    position: absolute;
+    left: 80%;
+    color: ${(props) => props.theme.accentColor};
+    background: #5E5DF0;
+    border-radius: 999px;
+    box-shadow: #5E5DF0 0 10px 20px -10px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 25px;
+    font-weight: 500;
+    opacity: 1;
+    outline: 0 solid transparent;
+    padding: 2px 20px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: fit-content;
+    word-break: break-word;
+    border: 0;
+`
+
 
 interface RouteParams {
   coinId: string;
@@ -141,11 +166,10 @@ interface PriceData {
 }
 
 
-interface ICoinProps {
-  isDark: boolean;
-}
-
-function Coin({ isDark }: ICoinProps) {
+function Coin() {
+  const isDark = useRecoilValue(isDarkAtom);
+  const setDarkAtom = useSetRecoilState(isDarkAtom);
+  const toggleDarkAtom = () => setDarkAtom(prev => !prev);
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
   const priceMatch = useRouteMatch("/:coindId/price");
@@ -178,6 +202,7 @@ function Coin({ isDark }: ICoinProps) {
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </Title>
+        <Toggle onClick={toggleDarkAtom}>{isDark ? "☾" : "☀︎"}</Toggle>
       </Header>
       {loading ? (
         <Loader>Loading...</Loader>
@@ -228,7 +253,7 @@ function Coin({ isDark }: ICoinProps) {
               />
             </Route>
             <Route path={`/${coinId}/chart`}>
-              <Chart isDark={isDark} coinId={coinId}/>
+              <Chart coinId={coinId}/>
             </Route>
           </Switch>
         </>

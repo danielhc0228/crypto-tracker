@@ -3,6 +3,8 @@ import { createGlobalStyle } from "styled-components";
 import {ThemeProvider} from "styled-components";
 import { lightTheme, darkTheme } from "./theme";
 import { useState } from "react";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "./atom";
 
 const GlobalStyle = createGlobalStyle`
 @font-face {
@@ -75,13 +77,12 @@ a {
 }
 `;
 function App() {
-  const [isDark, setDark] = useState(true);
-  const toggleDark = () => setDark((current) => (!current));
+  const isDark = useRecoilValue(isDarkAtom)
   return (
   <>
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <GlobalStyle></GlobalStyle>
-      <Router isDark={isDark} toggleDark={toggleDark} />
+      <GlobalStyle />
+      <Router />
     </ThemeProvider>
   </>
   )
