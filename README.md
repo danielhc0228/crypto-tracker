@@ -1,7 +1,8 @@
 # Crypto Tracker
 
 ## What is it
-The website provides information about coins regarding their price, history and charts.
+The website provides information about coins regarding their price, history and charts.\
+API data is retrieved from CoinPaprika API.
 
 ## Example Screenshots (Cropped)
 Home page
